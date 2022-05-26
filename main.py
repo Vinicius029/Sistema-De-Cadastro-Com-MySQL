@@ -1,29 +1,11 @@
 from PyQt5 import uic, QtWidgets
-
-def autenticacao_usuario(login):
-
-    usuario = 'admin'
-    i = 0
-    while i < len(login):
-        if login[i] != usuario[i]:
-            return False
-            break
-        i += 1
-    return True
+from autenticacao import Login
+from win10toast import ToastNotifier
 
 
-def autenticacao_senha(senha):
-    s = 'python'
-    i = 0
-    while i < len(senha):
-        if senha[i] != s[i]:
-            return False
-            break
-        i += 1
-    return True
 
 
-def teste():
+def fazer_login():
 
     login = formulario.login.text()
     senha = formulario.senha.text()
@@ -31,22 +13,33 @@ def teste():
     login = str(login)
     senha = str(senha)
 
-    res = autenticacao_usuario(login)
-    res02 = autenticacao_senha(senha)
+    res = Login.autenticacao_usuario(login)
+    res02 = Login.autenticacao_senha(senha)
+
+    toaster = ToastNotifier()
 
     if res == True and res02 == True:
-        print("autenticado")
+        toaster.show_toast(
+            "Autenticado",
+            threaded=True,
+            icon_path=None,
+            duration=10)
     elif res != True or res02 != True:
-        print("Não autenticado")
+         toaster.show_toast(
+            "Não Autenticado, Tente Novamente!",
+            threaded=True,
+            icon_path=None,
+            duration=10)
 
     formulario.login.setText('')
+    formulario.senha.setText('')
 
    
 
 app = QtWidgets.QApplication([])
 formulario = uic.loadUi('telaLogin.ui')
 
-formulario.entrar.clicked.connect(teste)
+formulario.entrar.clicked.connect(fazer_login)
 
 
 
